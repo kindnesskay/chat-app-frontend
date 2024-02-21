@@ -1,0 +1,69 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+.login-page {
+  font-family: monospace;
+  width: 100%;
+  height: 100vh;
+  padding-top: 6vw;
+  background: linear-gradient(
+    180deg,
+    rgb(13, 15, 16) 100%,
+    rgb(17, 25, 27) 100%
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.auth-type{
+  color: rgb(197, 197, 197);
+  font-size: 15px;
+  font-weight: 100;
+  text-align: center;
+}
+.card {
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+}
+.card form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 10px 5px;
+}
+.title {
+  font-family: monospace;
+  font-size: 30px;
+  color: white;
+  font-weight: 800;
+  text-align: center;
+}
+input {
+  width: 100%;
+  padding: 8px;
+  height: 50px;
+  background-color: #b5c3ca;
+  outline: none;
+  border-radius: 10px;
+  border: 0;
+  font-size: 18px;
+}
+button {
+  width: 100%;
+  height: 50px;
+  padding: 8px;
+  border-radius: 10px;
+  border: 0;
+  background-color: rgb(221, 146, 8);
+  color: white;
+  font-weight: 800;
+}
+button:hover{
+  cursor: pointer;
+  background-color: rgb(255, 184, 52);
+
+}
