@@ -1,17 +1,16 @@
-import { useState } from "react";
-import './App.css'
-
-import AuthPage from "./authPage";
-import ChatsPage from "./chatsPage";
-
+import "./App.css";
+import axios from "axios";
+import AppRoutes from "./AppRoutes";
+import AppContextProvider from "../context/AppContext";
 function App() {
-  const [user, setUser] = useState();
+  axios.defaults.baseURL = import.meta.env.VITE_API_URL;
+  axios.defaults.withCredentials = true;
 
-  if (!user) {
-    return <AuthPage onAuth={(user) => setUser(user)} />;
-  } else {
-    return <ChatsPage user={user} />;
-  }
+  return (
+    <AppContextProvider>
+      <AppRoutes />
+    </AppContextProvider>
+  );
 }
 
 export default App;

@@ -1,94 +1,136 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
+import { appContext } from "../context/AppContext";
 
-const AuthPage = (props) => {
+const AuthPage = () => {
+  const [loginPage, setLoginPage] = useState(false);
   const [username, setUsername] = useState();
-  const [secret, setSecret] = useState();
-  const [loginPage, setLoginPage] = useState(true);
-
-  const onLogin = (e) => {
+  const [password, setpassword] = useState();
+  const { setUser } = useContext(appContext);
+  const [error, setError] = useState("");
+  const handlePages = () => {
+    setLoginPage(!loginPage);
+    if (username) setUsername("");
+    if (password) setpassword("");
+    return true;
+  };
+  const onLogin = async (e) => {
     e.preventDefault();
-    if(!username || !secret)return false
-    axios
-      .post("http://localhost:5000/api/auth/sign-in", { username, secret })
-      .then((r) => props.onAuth({ ...r.data, secret })) // NOTE: over-ride secret
-      .catch((e) => console.log(JSON.stringify(e.response.data)));
+    setError("");
+    if (!username || !password) return false;
+    await axios
+      .post("/auth/sign-in", { username, password })
+      .then((response) => {
+        const user = response.data.user;
+        setUser(user);
+      })
+      .catch((e) => {
+        setError(e.response.data);
+      });
   };
 
   const onSignup = (e) => {
     e.preventDefault();
-    if(!username || !secret)return false
+    setError("");
+    if (!username || !password) return false;
     axios
-      .post("http://localhost:3001/signup", {
+      .post("/auth/sign-up", {
         username,
-        secret,
+        password,
       })
-      .then((r) => props.onAuth({ ...r.data, secret })) // NOTE: over-ride secret
-      .catch((e) => console.log(JSON.stringify(e.response.data)));
+      .then((response) => {
+        const user = response.data.user;
+        setUser(user);
+      })
+
+      .catch((e) => {
+        setError(e.response.data);
+      });
   };
 
   return (
-    <div className="login-page">
+    <div className="w-full flex justify-center items-center h-full bg-black">
       {loginPage ? (
-        <div className="card">
-          <form onSubmit={onLogin}>
-            <div className="title">Login</div>
-            <input
-              type="text"
-              name="username"
-              placeholder="Username"
-              onChange={(e) => setUsername(e.target.value)}
-            />
-            <input
-              type="password"
-              name="secret"
-              placeholder="Password"
-              onChange={(e) => setSecret(e.target.value)}
-            />
-            <button type="submit">LOG IN</button>
-            <p className="auth-type">Dont have an account?</p>
-            <button
-              onClick={() => {
-                setSecret("");
-                setUsername("");
-                setLoginPage(!loginPage);
-              }}
-            >
-              SIGN UP
-            </button>
-          </form>
-        </div>
+        <form
+          onSubmit={onLogin}
+          className="w-full flex flex-col gap-2 max-w-sm p-4"
+        >
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            onChange={(e) => setUsername(e.target.value)}
+            className="p-4 w-full rounded-lg"
+            required
+            value={username}
+          />
+          <input
+            type="password"
+            name="secret"
+            placeholder="Password"
+            onChange={(e) => setpassword(e.target.value)}
+            className="p-4 w-full rounded-lg"
+            required
+            value={password}
+          />
+          <p className="text-center text-sm font-semibold text-red-500 ">
+            {error}
+          </p>
+          <button
+            type="submit"
+            className="p-4 w-full rounded-lg bg-orange-400 text-white font-semibold text-lg"
+          >
+            LOG IN
+          </button>
+          <p className="text-white text-center">Dont have an account?</p>
+          <button
+            onClick={handlePages}
+            className="p-4 w-full rounded-lg bg-orange-400 text-white font-semibold text-lg "
+          >
+            SIGN UP
+          </button>
+        </form>
       ) : (
-        <div className="card">
-          {/* Sign Up Form */}
-          <form onSubmit={onSignup}>
-            <div className="title">Sign Up</div>
-            <input
-              type="text"
-              name="username"
-              placeholder="Username"
-              onChange={(e) => setUsername(e.target.value)}
-            />
-            <input
-              type="password"
-              name="secret"
-              placeholder="Password"
-              onChange={(e) => setSecret(e.target.value)}
-            />
-
-            <button type="submit">SIGN UP</button>
-            <p className="auth-type">Already have an account?</p>
-            <button
-              onClick={() => {
-                setSecret("");
-                setUsername("");
-                setLoginPage(!loginPage);
-              }}
-            >
-              LOGIN
-            </button>
-          </form>
-        </div>
+        <form
+          onSubmit={onLogin}
+          className="w-full flex flex-col gap-2 max-w-sm p-4"
+        >
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            onChange={(e) => setUsername(e.target.value)}
+            className="p-4 w-full rounded-lg"
+            required
+            value={username}
+          />
+          <input
+            type="password"
+            name="secret"
+            placeholder="Password"
+            onChange={(e) => setpassword(e.target.value)}
+            className="p-4 w-full rounded-lg"
+            required
+            value={password}
+          />
+          <p className="text-sm text-center font-semibold text-red-500 ">
+            {error}
+          </p>
+          <button
+            type="submit"
+            className="p-4 w-full rounded-lg bg-orange-400 text-white font-semibold text-lg"
+            onClick={onSignup}
+          >
+            SIGN UP
+          </button>
+          <p className="text-white text-center">already have an account?</p>
+          <button
+            onClick={handlePages}
+            className="p-4 w-full rounded-lg bg-orange-400 text-white font-semibold text-lg "
+          >
+            LOG IN
+          </button>
+        </form>
       )}
     </div>
   );
